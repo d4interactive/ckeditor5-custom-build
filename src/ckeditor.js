@@ -41,7 +41,6 @@ import List from '@ckeditor/ckeditor5-list/src/list.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
@@ -54,6 +53,11 @@ import MediaLibrary from './custom/mediaLibrary';
 import ArticleBox from './custom/articleBox/articleBox'
 import DragWidget from './custom/dragWidget/dragWidget'
 
+
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 
 
 class Editor extends ClassicEditor { }
@@ -92,7 +96,6 @@ Editor.builtinPlugins = [
 	TodoList,
 	PageBreak,
 	Paragraph,
-	Table,
 	Underline,
 	WordCount,
 	MediaLibrary,
@@ -101,7 +104,11 @@ Editor.builtinPlugins = [
 	HorizontalLine,
 	MediaEmbed,
 	ArticleBox,
-	DragWidget
+	DragWidget,
+	Table,
+	TableToolbar,
+	TableProperties,
+	TableCellProperties
 ];
 
 
@@ -166,6 +173,12 @@ Editor.defaultConfig = {
 			'imageTextAlternative',
 			'|',
 			'linkImage'
+		]
+	},
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells',
+			'tableProperties', 'tableCellProperties'
 		]
 	},
 	extraPlugins: [

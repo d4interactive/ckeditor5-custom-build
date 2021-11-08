@@ -34,10 +34,12 @@ export default class DragWidgetEditing extends Plugin {
         schema.register('dragedBox', {
             // Behaves like a self-contained object (e.g. an image).
             isObject: true,
-            allowAttributes: ['text'],
             // Allow in places where other blocks are allowed (e.g. directly in the root).
-            allowWhere: '$block'
+            allowWhere: '$block',
+            isLimit: true,
+            allowAttributes: ['text', 'type'],
         });
+
 
         // View-to-model position mapping is needed because an draged-box element in the model is represented by a single element,
         // but in the view it is a more complex structure.
@@ -89,7 +91,7 @@ export default class DragWidgetEditing extends Plugin {
 
             const cardView = viewWriter.createContainerElement('section', { class: 'draged-box' });
             // const linkView = viewWriter.createContainerElement( 'a', { href: `#`, class: 'p-name u-email' } );
-            const textView = viewWriter.createContainerElement('span', { class: 'draged-box-text' });
+            const textView = viewWriter.createContainerElement('p', { class: 'draged-box-text', style: '' });
 
             // viewWriter.insert( viewWriter.createPositionAt( linkView, 0 ), viewWriter.createText( '' ) );
             viewWriter.insert(viewWriter.createPositionAt(textView, 0), viewWriter.createText(text));
@@ -129,7 +131,7 @@ export default class DragWidgetEditing extends Plugin {
 
             writer.appendChild(
                 writer.createElement('section', { class: 'draged-box' }, [
-                    writer.createElement('span', { class: 'draged-box-text' }, val)
+                    writer.createElement('p', { class: 'draged-box-text', style: '' }, val)
                 ]),
                 fragment
             );
@@ -150,7 +152,7 @@ export default class DragWidgetEditing extends Plugin {
 
 function getCardDataFromViewElement(viewElement) {
     const children = Array.from(viewElement.getChildren());
-    const textElement = children.find(element => element.is('element', 'span') && element.hasClass('draged-box-text'));
+    const textElement = children.find(element => element.is('element', 'p') && element.hasClass('draged-box-text'));
 
     return {
         text: getText(textElement)
