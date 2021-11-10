@@ -51,7 +51,8 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 import MediaLibrary from './custom/mediaLibrary';
 import ArticleBox from './custom/articleBox/articleBox'
-import DragWidget from './custom/dragWidget/dragWidget'
+// import DragWidget from './custom/dragWidget/dragWidget'
+import ContentCard from './custom/contentCard/contentCard';
 
 
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -64,6 +65,7 @@ class Editor extends ClassicEditor { }
 
 // Plugins to include in the build.
 Editor.builtinPlugins = [
+	ContentCard,
 	SourceEditing,
 	Alignment,
 	Autosave,
@@ -104,7 +106,6 @@ Editor.builtinPlugins = [
 	HorizontalLine,
 	MediaEmbed,
 	ArticleBox,
-	DragWidget,
 	Table,
 	TableToolbar,
 	TableProperties,
@@ -116,7 +117,6 @@ Editor.builtinPlugins = [
 Editor.defaultConfig = {
 	toolbar: {
 		items: [
-			'dragWidget',
 			'articleBox',
 			'heading',
 			'|',

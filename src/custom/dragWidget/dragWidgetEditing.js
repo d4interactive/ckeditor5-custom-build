@@ -41,6 +41,17 @@ export default class DragWidgetEditing extends Plugin {
         });
 
 
+        schema.register('dragedBoxTitle', {
+            // Cannot be split or left by the caret.
+            isLimit: true,
+
+            allowIn: 'dragedBox',
+
+            // Allow content which is allowed in blocks (i.e. text with attributes).
+            allowContentOf: '$block'
+        });
+
+
         // View-to-model position mapping is needed because an draged-box element in the model is represented by a single element,
         // but in the view it is a more complex structure.
         this.editor.editing.mapper.on(
@@ -82,6 +93,37 @@ export default class DragWidgetEditing extends Plugin {
             view: (modelItem, { writer: viewWriter }) => toWidget(createWidget(modelItem, viewWriter), viewWriter, { label: 'draged box widget', hasSelectionHandle: true })
         });
 
+        // Title
+        conversion.for('upcast').elementToElement({
+            model: 'dragedBoxTitle',
+            view: {
+                name: 'h1',
+                classes: 'draged-box-title'
+            }
+        });
+        conversion.for('dataDowncast').elementToElement({
+            model: 'dragedBoxTitle',
+            view: {
+                name: 'h1',
+                classes: 'draged-box-title'
+            }
+        });
+        conversion.for('editingDowncast').elementToElement({
+            model: 'dragedBoxTitle',
+            view: (modelElement, { writer: viewWriter }) => {
+
+                const text = modelItem.getAttribute('text');
+                console.log('text', modelItem)
+
+                // Note: You use a more specialized createEditableElement() method here.
+                const h1 = viewWriter.createEditableElement('h1', { class: 'draged-box-title' });
+
+                viewWriter.insert(viewWriter.createPositionAt(h1, 0), viewWriter.createText(text));
+
+                return toWidgetEditable(h1, viewWriter);
+            }
+        });
+
         // Helper method for both downcast converters.
         function createWidget(modelItem, viewWriter) {
 
@@ -91,13 +133,13 @@ export default class DragWidgetEditing extends Plugin {
 
             const cardView = viewWriter.createContainerElement('section', { class: 'draged-box' });
             // const linkView = viewWriter.createContainerElement( 'a', { href: `#`, class: 'p-name u-email' } );
-            const textView = viewWriter.createContainerElement('p', { class: 'draged-box-text', style: '' });
+            // const textView = viewWriter.createContainerElement('p', { class: 'draged-box-text', style: '' });
 
             // viewWriter.insert( viewWriter.createPositionAt( linkView, 0 ), viewWriter.createText( '' ) );
-            viewWriter.insert(viewWriter.createPositionAt(textView, 0), viewWriter.createText(text));
+            // viewWriter.insert(viewWriter.createPositionAt(textView, 0), viewWriter.createText(text));
 
             // viewWriter.insert( viewWriter.createPositionAt( cardView, 0 ), linkView );
-            viewWriter.insert(viewWriter.createPositionAt(cardView, 'end'), textView);
+            // viewWriter.insert(viewWriter.createPositionAt(cardView, 'end'), textView);
 
             return cardView;
         }
@@ -131,7 +173,7 @@ export default class DragWidgetEditing extends Plugin {
 
             writer.appendChild(
                 writer.createElement('section', { class: 'draged-box' }, [
-                    writer.createElement('p', { class: 'draged-box-text', style: '' }, val)
+                    writer.createElement('h1', { class: 'draged-box-title', style: '' }, val)
                 ]),
                 fragment
             );
