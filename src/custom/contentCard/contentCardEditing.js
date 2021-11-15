@@ -2,6 +2,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget, toWidgetEditable, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import InsertContentCardCommand from './contentCardCommand';
 
 export default class contentCardEditing extends Plugin {
@@ -31,11 +32,11 @@ export default class contentCardEditing extends Plugin {
 
     /**
      * The model’s schema defines several aspects of how the model should look
-     * 
+     *
      * Where a node is allowed or disallowed (e.g. paragraph is allowed in $root, but not in heading1).
      * What attributes are allowed for a certain node (e.g. image can have the src and alt attributes).
      * Additional semantics of model nodes (e.g. image is of the “object” type and paragraph of the “block” type).
-     * 
+     *
      * Read more: https://ckeditor.com/docs/ckeditor5/latest/framework/guides/architecture/editing-engine.html#schema
      */
     _defineSchema() {
@@ -58,16 +59,44 @@ export default class contentCardEditing extends Plugin {
 
             // Allow content which is allowed in blocks (i.e. text with attributes).
             allowContentOf: '$block',
-
-            // Allow attributes 
-            allowAttributes: ['text', 'type'],
         });
+
+        schema.register('contentCardImage', {
+            // Cannot be split or left by the caret.
+            isLimit: true,
+
+            allowIn: 'contentCard',
+
+            // Allow content which is allowed in blocks (i.e. text with attributes).
+            allowContentOf: '$root',
+
+        });
+
+        schema.register('contentCardParagraph', {
+            // Cannot be split or left by the caret.
+            isLimit: true,
+
+            allowIn: 'contentCard',
+
+            // Allow content which is allowed in blocks (i.e. text with attributes).
+            allowContentOf: '$root',
+
+        });
+
+        // schema.register('contentCardImage', {
+        //
+        //     allowIn: 'contentCard',
+        //
+        //     // Allow content which is allowed in blocks (i.e. text with attributes).
+        //     allowContentOf: '$block',
+        //
+        // });
 
     }
 
     /**
     * Model and the view as about two completely independent subsystems. Used converters to connect them.
-    * 
+    *
     * The three main situations in which these two layers meet are:
     * Data upcasting - Loading the data to the editor.
     * Data downcasting - Retrieving the data from the editor.
@@ -97,20 +126,15 @@ export default class contentCardEditing extends Plugin {
             view: (modelElement, { writer: viewWriter }) => {
                 const section = viewWriter.createContainerElement('section', { class: 'content-card' });
 
+                // renderContent( { domElement, editor, state, props } );
+
                 return toWidget(section, viewWriter, { hasSelectionHandle: true });
             }
         });
 
         // <contentCardTitle> converters
         conversion.for('upcast').elementToElement({
-            model: (viewElement, { writer }) => {
-
-                return writer.createElement('contentCardTitle', () => {
-                    return {
-                        text: getText(viewElement)
-                    };
-                });
-            },
+            model: 'contentCardTitle',
             view: {
                 name: 'h3',
                 classes: 'content-card-title'
@@ -131,8 +155,57 @@ export default class contentCardEditing extends Plugin {
             }
         });
 
-    }
+        // <contentCardImage> converters
+        conversion.for('upcast').elementToElement({
+            model: 'contentCardImage',
+            view: {
+                name: 'div',
+                classes: 'content-card-image'
+            }
+        });
+        conversion.for('dataDowncast').elementToElement({
+            model: 'contentCardImage',
+            view: {
+                name: 'div',
+                classes: 'content-card-image'
+            }
+        });
+        conversion.for('editingDowncast').elementToElement({
+            model: 'contentCardImage',
+            view: (modelElement, { writer: viewWriter }) => {
+                const div = viewWriter.createEditableElement('div', { class: 'content-card-image',  style:"max-width: 25%;  float: left; margin: 5px 0.625rem;" });
+                return toWidgetEditable(div, viewWriter);
+            }
+        });
 
+        // <contentCardParagraph> converters
+        conversion.for('upcast').elementToElement({
+            model: 'contentCardParagraph',
+            view: {
+                name: 'div',
+                classes: 'content-card-paragraph'
+            }
+        });
+        conversion.for('dataDowncast').elementToElement({
+            model: 'contentCardParagraph',
+            view: {
+                name: 'div',
+                classes: 'content-card-paragraph'
+            }
+        });
+        conversion.for('editingDowncast').elementToElement({
+            model: 'contentCardParagraph',
+            view: (modelElement, { writer: viewWriter }) => {
+                const div = viewWriter.createEditableElement('div', { class: 'content-card-paragraph' });
+                return toWidgetEditable(div, viewWriter);
+            }
+        });
+
+    }
+    /**
+     * If query params contain Frill.co SSO
+     * Authenticate user and redirect to frill redirect URI
+     */
     _defineClipboardInputOutput() {
         const view = this.editor.editing.view;
         const viewDocument = view.document;
@@ -150,9 +223,9 @@ export default class contentCardEditing extends Plugin {
             }
 
             // Use JSON data encoded in the DataTransfer.
-            const { val } = JSON.parse(dataTransfer);
+            const { heading, image, p, link } = JSON.parse(dataTransfer);
 
-            console.debug('clipboardInput', val)
+            console.debug('clipboardInput', heading)
 
             // this.editor.execute('InsertContentCard', val)
 
@@ -160,16 +233,55 @@ export default class contentCardEditing extends Plugin {
             const writer = new UpcastWriter(viewDocument);
             const fragment = writer.createDocumentFragment();
 
+            // let img = `
+            //         <span class="image-inline" style="max-width: 50%;  float: right;" contenteditable="false">
+            //            <img src="https://c.cksource.com/a/1/img/docs/sample-image-bilingual-personality-disorder.jpg">
+            //         </span>
+            // `
+            // const imgBlock = this.editor.data.htmlProcessor.toView( img )
+            // imgBlock.set( 'bar', 1 )
+
+            // writer.setAttribute( 'data-some', 'http://ckeditor.com', imgBlock );
+
+            let imgBlock = writer.createElement('span', { class: 'image-inline' }, [
+                writer.createElement('img', { src: image }),
+            ])
+
+            let paragraph = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p><p></p>`)
+
             writer.appendChild(
                 writer.createElement('section', { class: 'content-card' }, [
-                    writer.createElement('h3', { class: 'content-card-title' }, val),
-                    writer.createElement('p', { class: 'content-card-paragraph' }, val)
+                    writer.createElement('h3', { class: 'content-card-title' }, heading),
+                    writer.createElement('div', { class: 'content-card-image'}, imgBlock),
+                    writer.createElement('div', { class: 'content-card-paragraph'}, paragraph)
                 ]),
                 fragment
             );
 
+            // const view = this.editor.data.htmlProcessor.toView( innerHtml );
+
+            // const imageElement =  new Element('imageBlock', {
+            //     src: link
+            // })
+            //
+
+            // let model = this.editor.model.change( writer => {
+            //     const imageElement = writer.createElement( 'imageBlock', {
+            //         src: link
+            //     } );
+            //
+            //     const innerHtml = this.editor.data.htmlProcessor.toData( imageElement );
+            //
+            //     console.log(innerHtml)
+            //
+            // } );
+
+
+
             // Provide the content to the clipboard pipeline for further processing.
             data.content = fragment;
+
+            // data.content = this.editor.data.htmlProcessor.toView( data.content );
 
         });
 
@@ -188,7 +300,50 @@ export default class contentCardEditing extends Plugin {
             return contentCard;
         }
     }
+
+
 }
+
+
+function createDomButton( editor, type ) {
+    const t = editor.locale.t;
+    const buttonView = new ButtonView( editor.locale );
+    // const command = editor.commands.get( 'updateHtmlEmbed' );
+
+    buttonView.set( {
+        tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
+        icon: icons.pencil,
+        tooltip: true
+    } );
+
+    buttonView.render();
+
+    if ( type === 'edit' ) {
+        buttonView.set( {
+            icon: icons.pencil,
+            label: t( 'Edit source' ),
+            class: 'raw-html-embed__edit-button'
+        } );
+    } else if ( type === 'save' ) {
+        buttonView.set( {
+            icon: icons.check,
+            label: t( 'Save changes' ),
+            class: 'raw-html-embed__save-button'
+        } );
+        // buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+    } else {
+        buttonView.set( {
+            icon: icons.cancel,
+            label: t( 'Cancel' ),
+            class: 'raw-html-embed__cancel-button'
+        } );
+    }
+
+    buttonView.destroy();
+
+    return buttonView.element.cloneNode( true );
+}
+
 
 function getText(viewElement) {
     return Array.from(viewElement.getChildren())

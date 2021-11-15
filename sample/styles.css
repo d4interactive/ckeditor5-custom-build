@@ -595,6 +595,11 @@ ul.contacts.tour-balloon-visible li:not(:nth-child(3)) {
     content: ")";
 }
 
+.content-card {
+    background-color: #f1f1f130;
+    /*border: 1px solid #d3d3d3;*/
+}
+
 #mydiv {
     width: 50%;
     background-color: #f1f1f1;
@@ -608,4 +613,12 @@ ul.contacts.tour-balloon-visible li:not(:nth-child(3)) {
     z-index: 10;
     background-color: #2196F3;
     color: #fff;
+}
+
+.content-card-paragraph p:last-of-type {
+    clear: both;
+}
+
+.clearfix {
+
 }

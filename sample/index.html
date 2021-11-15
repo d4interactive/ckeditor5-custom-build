@@ -156,7 +156,11 @@
 		function dragstart_handler(ev) {
 			// Add the target element's id to the data transfer object
 			ev.dataTransfer.setData("myData", JSON.stringify({
-				val: ev.target.id
+				id: ev.target.id,
+				heading: 'Colin Powell, Who Shaped U.S. National Security, Dies at 84 - The New York Times',
+				image: 'https://image-proxy.cstuinternal.com/SA9lybAVnjQvtdfa9hSCozpSlWQxyPSACRqAf5yEZ8M/auto/360/0/sm/0/aHR0cHM6Ly9zdGF0aWMwMS5ueXQuY29tL2ltYWdlcy8yMDIxLzEwLzE4L29iaXR1YXJpZXMvMThwb3dlbGwtY29saW4xMC8xOHBvd2VsbC1jb2xpbjEwLWZhY2Vib29rSnVtYm8uanBn.png',
+				p: 'In an interview with The New York Times in 2007, he analyzed himself in the third person: “Powell is a problem-solver. He was taught as a soldier to solve problems. So he has views, but he’s not an id...',
+				link: 'https://www.nytimes.com/2021/10/18/us/politics/colin-powell-dead.html'
 			}));
 		}
 
