@@ -615,10 +615,13 @@ ul.contacts.tour-balloon-visible li:not(:nth-child(3)) {
     color: #fff;
 }
 
-.content-card-paragraph p:last-of-type {
+/*.content-card-paragraph div.ck-horizontal-line {*/
+/*    clear: both;*/
+/*}*/
+
+.content-card-paragraph p:last-of-type::after {
+    content: '';
+    display: block;
     clear: both;
 }
 
-.clearfix {
-
-}

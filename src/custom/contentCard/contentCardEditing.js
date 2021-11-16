@@ -173,7 +173,7 @@ export default class contentCardEditing extends Plugin {
         conversion.for('editingDowncast').elementToElement({
             model: 'contentCardImage',
             view: (modelElement, { writer: viewWriter }) => {
-                const div = viewWriter.createEditableElement('div', { class: 'content-card-image',  style:"max-width: 25%;  float: left; margin: 5px 0.625rem;" });
+                const div = viewWriter.createEditableElement('div', { class: 'content-card-image',  style:"max-width: 25%;  float: left; margin: 5px 0.625rem 5px 0" });
                 return toWidgetEditable(div, viewWriter);
             }
         });
@@ -247,7 +247,7 @@ export default class contentCardEditing extends Plugin {
                 writer.createElement('img', { src: image }),
             ])
 
-            let paragraph = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p><p></p>`)
+            let paragraph = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p>`)
 
             writer.appendChild(
                 writer.createElement('section', { class: 'content-card' }, [
