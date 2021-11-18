@@ -34,7 +34,6 @@ import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
-
 import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import List from '@ckeditor/ckeditor5-list/src/list.js';
@@ -50,8 +49,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 import MediaLibrary from './custom/mediaLibrary';
-import ArticleBox from './custom/articleBox/articleBox'
-// import DragWidget from './custom/dragWidget/dragWidget'
+
 import ContentCard from './custom/contentCard/contentCard';
 
 
@@ -104,7 +102,6 @@ Editor.builtinPlugins = [
 	FindAndReplace,
 	HorizontalLine,
 	MediaEmbed,
-	ArticleBox,
 	Table,
 	TableToolbar,
 	TableProperties,
@@ -117,7 +114,6 @@ Editor.builtinPlugins = [
 Editor.defaultConfig = {
 	toolbar: {
 		items: [
-			'articleBox',
 			'heading',
 			'|',
 			'bold',
@@ -137,6 +133,7 @@ Editor.defaultConfig = {
 			'|',
 			'imageUpload',
 			'mediaLibrary',
+			'mediaEmbed',
 			'|',
 			'alignment',
 			'blockQuote',

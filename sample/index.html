@@ -12,6 +12,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="https://c.cksource.com/a/1/logos/ckeditor5.png">
 	<link rel="stylesheet" type="text/css" href="styles.css">
+
+
+	<script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
 </head>
 
 <body data-editor="ClassicEditor" data-collaboration="false" data-revision-history="false">
@@ -157,8 +160,9 @@
 			// Add the target element's id to the data transfer object
 			ev.dataTransfer.setData("myData", JSON.stringify({
 				id: ev.target.id,
+				type: 'image',
 				heading: 'Colin Powell, Who Shaped U.S. National Security, Dies at 84 - The New York Times',
-				image: 'https://image-proxy.cstuinternal.com/SA9lybAVnjQvtdfa9hSCozpSlWQxyPSACRqAf5yEZ8M/auto/360/0/sm/0/aHR0cHM6Ly9zdGF0aWMwMS5ueXQuY29tL2ltYWdlcy8yMDIxLzEwLzE4L29iaXR1YXJpZXMvMThwb3dlbGwtY29saW4xMC8xOHBvd2VsbC1jb2xpbjEwLWZhY2Vib29rSnVtYm8uanBn.png',
+				media: 'https://c.cksource.com/a/1/img/docs/sample-image-bilingual-personality-disorder.jpg',
 				p: 'In an interview with The New York Times in 2007, he analyzed himself in the third person: “Powell is a problem-solver. He was taught as a soldier to solve problems. So he has views, but he’s not an id...',
 				link: 'https://www.nytimes.com/2021/10/18/us/politics/colin-powell-dead.html'
 			}));
@@ -177,7 +181,7 @@
 					callback: () => {
 						console.log("SSSSSSSSSfSSSS")
 					}
-				}
+				},
 
 
 			})
@@ -199,6 +203,8 @@
 				console.error(error);
 			});
 	</script>
+
+
 </body>
 
 </html>

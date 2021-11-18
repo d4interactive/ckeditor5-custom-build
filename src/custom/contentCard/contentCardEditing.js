@@ -167,7 +167,12 @@ export default class contentCardEditing extends Plugin {
             model: 'contentCardImage',
             view: {
                 name: 'div',
-                classes: 'content-card-image'
+                classes: 'content-card-image',
+                styles: {
+                    float: 'left',
+                   'max-width': '25%',
+                    margin: '5px 0.625rem 5px 0'
+                }
             }
         });
         conversion.for('editingDowncast').elementToElement({
@@ -209,7 +214,7 @@ export default class contentCardEditing extends Plugin {
     _defineClipboardInputOutput() {
         const view = this.editor.editing.view;
         const viewDocument = view.document;
-
+        const model = this.editor.model
         // Processing pasted or dropped content.
         this.listenTo(viewDocument, 'clipboardInput', (evt, data) => {
             // The clipboard content was already processed by the listener on the higher priority
@@ -223,7 +228,8 @@ export default class contentCardEditing extends Plugin {
             }
 
             // Use JSON data encoded in the DataTransfer.
-            const { heading, image, p, link } = JSON.parse(dataTransfer);
+            let dataTransforObj = JSON.parse(dataTransfer);
+            const { heading, media, p, link, type } = dataTransforObj;
 
             console.debug('clipboardInput', heading)
 
@@ -232,6 +238,57 @@ export default class contentCardEditing extends Plugin {
             //Translate the data to a view fragment.
             const writer = new UpcastWriter(viewDocument);
             const fragment = writer.createDocumentFragment();
+
+            if(type === 'article') {
+                let imgBlock = writer.createElement('span', { class: 'image-inline' }, [
+                    writer.createElement('img', { src: media }),
+                ])
+
+                let paragraphBlock = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p>`)
+
+                writer.appendChild(
+                    writer.createElement('section', { class: 'content-card' }, [
+                        writer.createElement('h3', { class: 'content-card-title' }, heading),
+                        writer.createElement('div', { class: 'content-card-image'}, imgBlock),
+                        writer.createElement('div', { class: 'content-card-paragraph'}, paragraphBlock)
+                    ]),
+                    fragment
+                );
+            }  else  if (type === 'youtube' || type === 'dailymotion' || type === 'twitter') {
+
+                let mediaElement = this.editor.data.htmlProcessor.toView(`<figure class="media">
+                                                                                <oembed url="${media}"></oembed>
+                                                                            </figure>`)
+
+                writer.appendChild(
+                    writer.createElement('section', { class: 'content-card' }, [
+                        writer.createElement('div', { class: 'content-card-paragraph'}, mediaElement)
+                    ]),
+                    fragment
+                );
+
+            } else  if (type === 'image') {
+
+                let innerHtml = ` <figure class="image">
+                                                                                    <img src="${media}">
+                                                                                </figure>`
+                if (p) {
+                    innerHtml += `<p  style="text-align:center;">${p}</p>`
+                }
+                let mediaElement = this.editor.data.htmlProcessor.toView(innerHtml)
+
+                writer.appendChild(
+                    writer.createElement('section', { class: 'content-card' }, [
+                        writer.createElement('div', { class: 'content-card-paragraph'}, mediaElement)
+                    ]),
+                    fragment
+                );
+
+            }
+
+            // Provide the content to the clipboard pipeline for further processing.
+            data.content = fragment;
+
 
             // let img = `
             //         <span class="image-inline" style="max-width: 50%;  float: right;" contenteditable="false">
@@ -242,21 +299,6 @@ export default class contentCardEditing extends Plugin {
             // imgBlock.set( 'bar', 1 )
 
             // writer.setAttribute( 'data-some', 'http://ckeditor.com', imgBlock );
-
-            let imgBlock = writer.createElement('span', { class: 'image-inline' }, [
-                writer.createElement('img', { src: image }),
-            ])
-
-            let paragraph = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p>`)
-
-            writer.appendChild(
-                writer.createElement('section', { class: 'content-card' }, [
-                    writer.createElement('h3', { class: 'content-card-title' }, heading),
-                    writer.createElement('div', { class: 'content-card-image'}, imgBlock),
-                    writer.createElement('div', { class: 'content-card-paragraph'}, paragraph)
-                ]),
-                fragment
-            );
 
             // const view = this.editor.data.htmlProcessor.toView( innerHtml );
 
@@ -276,10 +318,6 @@ export default class contentCardEditing extends Plugin {
             //
             // } );
 
-
-
-            // Provide the content to the clipboard pipeline for further processing.
-            data.content = fragment;
 
             // data.content = this.editor.data.htmlProcessor.toView( data.content );
 

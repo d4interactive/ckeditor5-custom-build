@@ -1,9 +1,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import MediaIcon from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
+import MediaIcon from './icons/icons8-folder.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { findOptimalInsertionRange } from '@ckeditor/ckeditor5-widget/src'
+
 
 class MediaLibrary extends Plugin {
   init() {
@@ -17,7 +18,7 @@ class MediaLibrary extends Plugin {
       const command = editor.commands.get( 'callbackCommand' );
 
       view.set({
-        label: 'Add Media',
+        label: 'Media Library',
         icon: MediaIcon,
         tooltip: true
       });
