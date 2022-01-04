@@ -1,11 +1,14 @@
 {
   "name": "@seeratawan01/ckeditor5-custom-build",
-  "author": "CKSource",
+  "author": {
+    "name": "seeratawan01",
+    "email": "seeratsdsking@gmail.com"
+  },
   "description": "A custom CKEditor 5 build made by the CKEditor 5 online builder.",
   "version": "0.0.1",
   "license": "SEE LICENSE IN LICENSE.md",
   "main": "./build/ckeditor.js",
-  "repository": "git@github.com:seeratawan01/ckeditor5-build.git",
+  "repository": "git@github.com:d4interactive/ckeditor5.git",
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^31.0.0",
     "@ckeditor/ckeditor5-autosave": "^31.0.0",
