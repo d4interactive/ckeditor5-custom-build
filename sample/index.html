@@ -13,8 +13,7 @@
 	<link rel="icon" type="image/png" href="https://c.cksource.com/a/1/logos/ckeditor5.png">
 	<link rel="stylesheet" type="text/css" href="styles.css">
 
-
-	<script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+	<script charset="utf-8" src="https://cdn.iframe.ly/embed.js?api_key=66445b5f80fc8d7aa04404"></script>
 </head>
 
 <body data-editor="ClassicEditor" data-collaboration="false" data-revision-history="false">
@@ -162,7 +161,7 @@
 				id: ev.target.id,
 				type: 'image',
 				heading: 'Colin Powell, Who Shaped U.S. National Security, Dies at 84 - The New York Times',
-				media: 'https://c.cksource.com/a/1/img/docs/sample-image-bilingual-personality-disorder.jpg',
+				media: 'https://farm66.staticflickr.com/65535/51727663641_ddae0cd8bf.jpg',
 				p: 'In an interview with The New York Times in 2007, he analyzed himself in the third person: “Powell is a problem-solver. He was taught as a soldier to solve problems. So he has views, but he’s not an id...',
 				link: 'https://www.nytimes.com/2021/10/18/us/politics/colin-powell-dead.html'
 			}));
@@ -173,7 +172,11 @@
 		}
 	</script>
 
-	<script>ClassicEditor
+	<script>
+		var IFRAME_SRC = 'https://cdn.iframe.ly/api/iframe';
+		var API_KEY = '66445b5f80fc8d7aa04404';
+
+		ClassicEditor
 			.create(document.querySelector('.editor'), {
 
 				licenseKey: '',
@@ -182,6 +185,42 @@
 						console.log("SSSSSSSSSfSSSS")
 					}
 				},
+				// Configure 'mediaEmbed' with Iframely previews.
+				mediaEmbed: {
+
+					// Previews are always enabled if there’s a provider for a URL (below regex catches all URLs)
+					// By default `previewsInData` are disabled, but let’s set it to `false` explicitely to be sure
+					previewsInData: false,
+
+					providers: [
+						{
+							// hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
+							name: 'iframely previews',
+
+							// Match all URLs or just the ones you need:
+							url: /.+/,
+
+							html: match => {
+								const url = match[0];
+
+								var iframeUrl = IFRAME_SRC + '?app=1&api_key=' + API_KEY + '&url=' + encodeURIComponent(url);
+								// alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
+								// more about it: https://iframely.com/docs/allow-origins
+
+								return (
+									// If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
+									'<div class="iframely-embed">' +
+									'<div class="iframely-responsive">' +
+									`<iframe src="${iframeUrl}" ` +
+									'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
+									'</iframe>' +
+									'</div>' +
+									'</div>'
+								);
+							}
+						}
+					]
+				}
 
 
 			})

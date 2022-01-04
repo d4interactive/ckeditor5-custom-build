@@ -180,10 +180,6 @@ Editor.defaultConfig = {
 	},
 	extraPlugins: [
 		function (editor) {
-
-			editor.editing.view.on('drop', (evt, data) => {
-				console.log('dropped in', evt, data)
-			})
 			// Allow <iframe> elements in the model.
 			editor.model.schema.register('iframe', {
 				allowWhere: '$text',

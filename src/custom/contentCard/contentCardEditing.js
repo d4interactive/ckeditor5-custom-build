@@ -170,7 +170,7 @@ export default class contentCardEditing extends Plugin {
                 classes: 'content-card-image',
                 styles: {
                     float: 'left',
-                   'max-width': '25%',
+                    'max-width': '25%',
                     margin: '5px 0.625rem 5px 0'
                 }
             }
@@ -178,7 +178,7 @@ export default class contentCardEditing extends Plugin {
         conversion.for('editingDowncast').elementToElement({
             model: 'contentCardImage',
             view: (modelElement, { writer: viewWriter }) => {
-                const div = viewWriter.createEditableElement('div', { class: 'content-card-image',  style:"max-width: 25%;  float: left; margin: 5px 0.625rem 5px 0" });
+                const div = viewWriter.createEditableElement('div', { class: 'content-card-image', style: "max-width: 25%;  float: left; margin: 5px 0.625rem 5px 0" });
                 return toWidgetEditable(div, viewWriter);
             }
         });
@@ -229,7 +229,7 @@ export default class contentCardEditing extends Plugin {
 
             // Use JSON data encoded in the DataTransfer.
             let dataTransforObj = JSON.parse(dataTransfer);
-            const { heading, media, p, link, type } = dataTransforObj;
+            let { heading, media, p, link, type } = dataTransforObj;
 
             console.debug('clipboardInput', heading)
 
@@ -239,22 +239,22 @@ export default class contentCardEditing extends Plugin {
             const writer = new UpcastWriter(viewDocument);
             const fragment = writer.createDocumentFragment();
 
-            if(type === 'article') {
+            if (type === 'article') {
                 let imgBlock = writer.createElement('span', { class: 'image-inline' }, [
                     writer.createElement('img', { src: media }),
                 ])
 
-                let paragraphBlock = this.editor.data.htmlProcessor.toView(p+`<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p>`)
+                let paragraphBlock = this.editor.data.htmlProcessor.toView(p + `<p><a class="ck-link_selected" target="_blank" href="${link}">Read More</a></p>`)
 
                 writer.appendChild(
                     writer.createElement('section', { class: 'content-card' }, [
                         writer.createElement('h3', { class: 'content-card-title' }, heading),
-                        writer.createElement('div', { class: 'content-card-image'}, imgBlock),
-                        writer.createElement('div', { class: 'content-card-paragraph'}, paragraphBlock)
+                        writer.createElement('div', { class: 'content-card-image' }, imgBlock),
+                        writer.createElement('div', { class: 'content-card-paragraph' }, paragraphBlock)
                     ]),
                     fragment
                 );
-            }  else  if (type === 'youtube' || type === 'dailymotion' || type === 'twitter') {
+            } else if (type === 'embed') {
 
                 let mediaElement = this.editor.data.htmlProcessor.toView(`<figure class="media">
                                                                                 <oembed url="${media}"></oembed>
@@ -262,24 +262,28 @@ export default class contentCardEditing extends Plugin {
 
                 writer.appendChild(
                     writer.createElement('section', { class: 'content-card' }, [
-                        writer.createElement('div', { class: 'content-card-paragraph'}, mediaElement)
+                        writer.createElement('div', { class: 'content-card-paragraph' }, mediaElement)
                     ]),
                     fragment
                 );
 
-            } else  if (type === 'image') {
+            } else if (type === 'image') {
+                if (!p) {
+                    p = ''
+                }
 
                 let innerHtml = ` <figure class="image">
-                                                                                    <img src="${media}">
-                                                                                </figure>`
-                if (p) {
-                    innerHtml += `<p  style="text-align:center;">${p}</p>`
-                }
+                                    <img src="${media}">
+                                     <figcaption>
+                                        ${p}
+                                    </figcaption>
+                                </figure>`
+
                 let mediaElement = this.editor.data.htmlProcessor.toView(innerHtml)
 
                 writer.appendChild(
                     writer.createElement('section', { class: 'content-card' }, [
-                        writer.createElement('div', { class: 'content-card-paragraph'}, mediaElement)
+                        writer.createElement('div', { class: 'content-card-paragraph' }, mediaElement)
                     ]),
                     fragment
                 );
@@ -343,43 +347,43 @@ export default class contentCardEditing extends Plugin {
 }
 
 
-function createDomButton( editor, type ) {
+function createDomButton(editor, type) {
     const t = editor.locale.t;
-    const buttonView = new ButtonView( editor.locale );
+    const buttonView = new ButtonView(editor.locale);
     // const command = editor.commands.get( 'updateHtmlEmbed' );
 
-    buttonView.set( {
+    buttonView.set({
         tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
         icon: icons.pencil,
         tooltip: true
-    } );
+    });
 
     buttonView.render();
 
-    if ( type === 'edit' ) {
-        buttonView.set( {
+    if (type === 'edit') {
+        buttonView.set({
             icon: icons.pencil,
-            label: t( 'Edit source' ),
+            label: t('Edit source'),
             class: 'raw-html-embed__edit-button'
-        } );
-    } else if ( type === 'save' ) {
-        buttonView.set( {
+        });
+    } else if (type === 'save') {
+        buttonView.set({
             icon: icons.check,
-            label: t( 'Save changes' ),
+            label: t('Save changes'),
             class: 'raw-html-embed__save-button'
-        } );
+        });
         // buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
     } else {
-        buttonView.set( {
+        buttonView.set({
             icon: icons.cancel,
-            label: t( 'Cancel' ),
+            label: t('Cancel'),
             class: 'raw-html-embed__cancel-button'
-        } );
+        });
     }
 
     buttonView.destroy();
 
-    return buttonView.element.cloneNode( true );
+    return buttonView.element.cloneNode(true);
 }
 
 

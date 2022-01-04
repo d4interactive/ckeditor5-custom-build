@@ -3,7 +3,7 @@ import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/cked
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
-import InsertDragBoxCommand from './dragWidgetCommand';
+import InsertDragBoxCommand from './dragWidgetCommand';imageBlock
 
 export default class DragWidgetEditing extends Plugin {
 
