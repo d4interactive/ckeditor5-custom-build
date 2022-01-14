@@ -57,12 +57,14 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-
+import Anchor from './custom/anchor/anchor';
 
 class Editor extends ClassicEditor { }
 
+
 // Plugins to include in the build.
 Editor.builtinPlugins = [
+	Anchor,
 	SourceEditing,
 	Alignment,
 	Autosave,
@@ -138,6 +140,7 @@ Editor.defaultConfig = {
 			'alignment',
 			'blockQuote',
 			'link',
+			'anchor',
 			'|',
 			'fontSize',
 			'fontBackgroundColor',
