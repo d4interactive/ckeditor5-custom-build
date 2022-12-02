@@ -35,6 +35,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import List from '@ckeditor/ckeditor5-list/src/list.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
@@ -91,6 +92,7 @@ Editor.builtinPlugins = [
 	ImageToolbar,
 	SimpleUploadAdapter,
 	Indent,
+	IndentBlock,
 	Italic,
 	Link,
 	List,
